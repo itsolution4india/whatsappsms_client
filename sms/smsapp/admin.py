@@ -10,19 +10,19 @@ from django import forms
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('email', 'user_id', 'username', 'phone_number_id', 'whatsapp_business_account_id', 'coins','marketing_coins','authentication_coins', 'discount', 'is_staff', 'register_app')
+    list_display = ('email', 'user_id', 'username', 'phone_number_id', 'whatsapp_business_account_id', 'coins','marketing_coins','authentication_coins', 'is_staff', 'register_app')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
     search_fields = ('email', 'username')
     ordering = ('email',)
     fieldsets = (
-        (None, {'fields': ('email', 'user_id', 'phone_number_id', 'whatsapp_business_account_id','marketing_coins','authentication_coins', 'discount',"remarks", 'password', 'register_app', 'api_token')}),
+        (None, {'fields': ('email', 'user_id', 'phone_number_id', 'whatsapp_business_account_id','marketing_coins','authentication_coins',"remarks", 'password', 'register_app', 'api_token')}),
         (_('Personal info'), {'fields': ('username',)}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'user_id', 'username', 'phone_number_id', 'whatsapp_business_account_id','marketing_coins','authentication_coins', 'discount', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser', 'register_app'),  # Removed 'coins' here
+            'fields': ('email', 'user_id', 'username', 'phone_number_id', 'whatsapp_business_account_id','marketing_coins','authentication_coins', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser', 'register_app'),  # Removed 'coins' here
         }),
     )
     def get_queryset(self, request):
@@ -139,14 +139,40 @@ class TemplatesAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         return qs.exclude(email__email='admin@gmail.com')
 
+class UserAccessAdminForm(forms.ModelForm):
+    class Meta:
+        model = UserAccess
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter out admin@gmail.com from the user dropdown
+        if 'user' in self.fields:
+            self.fields['user'].queryset = self.fields['user'].queryset.exclude(email='admin@gmail.com')
+
 class UserAccessAdmin(admin.ModelAdmin):
     list_display = ('user', 'can_send_sms', 'can_view_reports', 'can_manage_campaign', 'can_schedule_tasks', 'can_create_flow_message', 'can_send_flow_message', 'can_link_templates', 'can_manage_bot_flow', "can_access_API_doc", 'can_manage_number_validation', "can_enable_2fauth")
+    form = UserAccessAdminForm
+    
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.exclude(user__email='admin@gmail.com')
 
+class CountryPermissionAdminForm(forms.ModelForm):
+    class Meta:
+        model = CountryPermission
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filter out admin@gmail.com from the user dropdown
+        if 'user' in self.fields:
+            self.fields['user'].queryset = self.fields['user'].queryset.exclude(email='admin@gmail.com')
+
 class CountryPermissionAdmin(admin.ModelAdmin):
     list_display = ('user', 'can_send_msg_to_india', 'can_send_msg_to_nepal', 'can_send_msg_to_us', 'can_send_msg_to_australia', 'can_send_msg_to_uae')
+    form = CountryPermissionAdminForm
+    
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         return qs.exclude(user__email='admin@gmail.com')
