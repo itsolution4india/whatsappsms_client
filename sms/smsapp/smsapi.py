@@ -2,7 +2,7 @@ import requests
 import json
 
 def send_api(phone_number_id, template_name, language, media_type, media_id, contact):
-    url = 'https://fastapi.wtsmessage.xyz/'
+    url = 'https://fastapi.waverified.online/'
     headers = {
     'Content-Type': 'application/json'
     }
