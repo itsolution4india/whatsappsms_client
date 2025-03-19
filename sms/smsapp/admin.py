@@ -52,19 +52,19 @@ class WhitelistBlacklistAdminForm(forms.ModelForm):
             'blacklist_phone': forms.Textarea(attrs={'placeholder': '+9197857XXXXX'}),
         }
 
-class Whitelist_BlacklistAdmin(admin.ModelAdmin):
-    list_display = ('whitelist_phone', 'blacklist_phone')
-    search_fields = ('whitelist_phone', 'blacklist_phone')
+# class Whitelist_BlacklistAdmin(admin.ModelAdmin):
+#     list_display = ('whitelist_phone', 'blacklist_phone')
+#     search_fields = ('whitelist_phone', 'blacklist_phone')
     
-    fieldsets = (
-        (None, {
-            'fields': ('whitelist_phone', 'blacklist_phone'),
-            'description': "Enter new phone numbers to be whitelist and blacklist, each on a new line."
-        }),
-    )
-    form = WhitelistBlacklistAdminForm
+#     fieldsets = (
+#         (None, {
+#             'fields': ('whitelist_phone', 'blacklist_phone'),
+#             'description': "Enter new phone numbers to be whitelist and blacklist, each on a new line."
+#         }),
+#     )
+#     form = WhitelistBlacklistAdminForm
 
-admin.site.register(Whitelist_Blacklist, Whitelist_BlacklistAdmin)
+# admin.site.register(Whitelist_Blacklist, Whitelist_BlacklistAdmin)
 
 
 class ReportInfoAdmin(admin.ModelAdmin):
@@ -116,28 +116,28 @@ class ReportInfoAdmin(admin.ModelAdmin):
 admin.site.register(ReportInfo, ReportInfoAdmin)
 
 
-class TemplatesAdmin(admin.ModelAdmin):
-    list_display = (
-        'email',
-        'templates',
-    )
-    list_filter = (
-        'email',
-    )
-    search_fields = (
-        'email__email',
-    )
-    fieldsets = (
-        (None, {
-            'fields': (
-                'email',
-                'templates',
-            ),
-        }),
-    )
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.exclude(email__email='admin@gmail.com')
+# class TemplatesAdmin(admin.ModelAdmin):
+#     list_display = (
+#         'email',
+#         'templates',
+#     )
+#     list_filter = (
+#         'email',
+#     )
+#     search_fields = (
+#         'email__email',
+#     )
+#     fieldsets = (
+#         (None, {
+#             'fields': (
+#                 'email',
+#                 'templates',
+#             ),
+#         }),
+#     )
+#     def get_queryset(self, request):
+#         qs = super().get_queryset(request)
+#         return qs.exclude(email__email='admin@gmail.com')
 
 class UserAccessAdminForm(forms.ModelForm):
     class Meta:
@@ -177,8 +177,113 @@ class CountryPermissionAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         return qs.exclude(user__email='admin@gmail.com')
 
+
+# Form for Flows admin
+class FlowsAdminForm(forms.ModelForm):
+    class Meta:
+        model = Flows
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'email' in self.fields:
+            self.fields['email'].queryset = self.fields['email'].queryset.exclude(email='admin@gmail.com')
+
+# Admin class for Flows
+class FlowsAdmin(admin.ModelAdmin):
+    list_display = ('email', 'flows')
+    form = FlowsAdminForm
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(email__email='admin@gmail.com')
+
+# Form for LoginHistory admin
+class LoginHistoryAdminForm(forms.ModelForm):
+    class Meta:
+        model = LoginHistory
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'user' in self.fields:
+            self.fields['user'].queryset = self.fields['user'].queryset.exclude(email='admin@gmail.com')
+
+# Admin class for LoginHistory
+class LoginHistoryAdmin(admin.ModelAdmin):
+    list_display = ('user', 'login_time', 'ip_address', 'location')
+    form = LoginHistoryAdminForm
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(user__email='admin@gmail.com')
+
+# Update the existing WhitelistBlacklistAdminForm
+class WhitelistBlacklistAdminForm(forms.ModelForm):
+    class Meta:
+        model = Whitelist_Blacklist
+        fields = '__all__'
+        widgets = {
+            'whitelist_phone': forms.Textarea(attrs={'placeholder': '+9197857XXXXX'}),
+            'blacklist_phone': forms.Textarea(attrs={'placeholder': '+9197857XXXXX'}),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'email' in self.fields:
+            self.fields['email'].queryset = self.fields['email'].queryset.exclude(email='admin@gmail.com')
+
+# Update the existing Whitelist_BlacklistAdmin
+class Whitelist_BlacklistAdmin(admin.ModelAdmin):
+    list_display = ('whitelist_phone', 'blacklist_phone')
+    search_fields = ('whitelist_phone', 'blacklist_phone')
+    form = WhitelistBlacklistAdminForm
+    
+    fieldsets = (
+        (None, {
+            'fields': ('email', 'whitelist_phone', 'blacklist_phone'),
+            'description': "Enter new phone numbers to be whitelist and blacklist, each on a new line."
+        }),
+    )
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(email__email='admin@gmail.com')
+
+# Form for Templates admin
+class TemplatesAdminForm(forms.ModelForm):
+    class Meta:
+        model = Templates
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'email' in self.fields:
+            self.fields['email'].queryset = self.fields['email'].queryset.exclude(email='admin@gmail.com')
+
+# Update the existing TemplatesAdmin
+class TemplatesAdmin(admin.ModelAdmin):
+    list_display = ('email', 'templates')
+    list_filter = ('email',)
+    search_fields = ('email__email',)
+    form = TemplatesAdminForm
+    
+    fieldsets = (
+        (None, {
+            'fields': ('email', 'templates',),
+        }),
+    )
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.exclude(email__email='admin@gmail.com')
+    
+    
 # Register your admin class with the model
 admin.site.register(Templates, TemplatesAdmin)
+admin.site.register(Whitelist_Blacklist, Whitelist_BlacklistAdmin)
+admin.site.register(LoginHistory, LoginHistoryAdmin)
+admin.site.register(Flows, FlowsAdmin)
 admin.site.register(ScheduledMessage)
 admin.site.register(TemplateLinkage)
 admin.site.register(MessageResponse)
@@ -186,7 +291,6 @@ admin.site.register(BotSentMessages)
 admin.site.register(UserAccess, UserAccessAdmin)
 admin.site.register(CountryPermission, CountryPermissionAdmin)
 admin.site.register(CoinsHistory)
-admin.site.register(Flows)
 admin.site.register(Train_wit_Bot)
 admin.site.register(Register_TwoAuth)
 admin.site.register(Validate_TwoAuth)
@@ -195,4 +299,3 @@ admin.site.register(Group)
 admin.site.register(Contact)
 admin.site.register(Last_Replay_Data)
 admin.site.register(LoginAttempt)
-admin.site.register(LoginHistory)
