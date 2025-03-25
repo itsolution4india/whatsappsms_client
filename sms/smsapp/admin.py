@@ -170,7 +170,7 @@ class CountryPermissionAdminForm(forms.ModelForm):
             self.fields['user'].queryset = self.fields['user'].queryset.exclude(email='admin@gmail.com')
 
 class CountryPermissionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'can_send_msg_to_india', 'can_send_msg_to_nepal', 'can_send_msg_to_us', 'can_send_msg_to_australia', 'can_send_msg_to_uae')
+    list_display = ('user', 'can_send_msg_to_india')
     form = CountryPermissionAdminForm
     
     def get_queryset(self, request):
