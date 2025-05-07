@@ -219,14 +219,14 @@ def validate_phone_numbers(request, contacts, uploaded_file, discount, add_91=No
     if permissions:
         if permissions.can_send_msg_to_india:
             patterns['india'] = re.compile(r"^\+?91\d{10}$")
-        if permissions.can_send_msg_to_nepal:
-            patterns['nepal'] = re.compile(r"^\+?977\d{9}$")
-        if permissions.can_send_msg_to_us:
-            patterns['us'] = re.compile(r"^\+?1\d{10}$")
-        if permissions.can_send_msg_to_australia:
-            patterns['australia'] = re.compile(r"^\+?61\d{9}$")
-        if permissions.can_send_msg_to_uae:
-            patterns['uae'] = re.compile(r"^\+?971\d{9}$")
+        # if permissions.can_send_msg_to_nepal:
+        #     patterns['nepal'] = re.compile(r"^\+?977\d{9}$")
+        # if permissions.can_send_msg_to_us:
+        #     patterns['us'] = re.compile(r"^\+?1\d{10}$")
+        # if permissions.can_send_msg_to_australia:
+        #     patterns['australia'] = re.compile(r"^\+?61\d{9}$")
+        # if permissions.can_send_msg_to_uae:
+        #     patterns['uae'] = re.compile(r"^\+?971\d{9}$")
 
     # If no permissions are set, return empty lists
     if not patterns:
